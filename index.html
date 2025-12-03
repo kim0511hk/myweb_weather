@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나만의 날씨 예보</title>
+    <!-- 한글 폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- 3D 지구/달 및 천문 계산 라이브러리 -->
+    
+    <script src="//unpkg.com/three@0.160.0/build/three.min.js"></script>
+    
+    <script src="//unpkg.com/globe.gl"></script>
+
+    <!-- [NEW] SunCalc 라이브러리 추가 (API 없이 천문 정보 계산) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 야간 모드용 필터 -->
+    <div id="nightFilter" class="night-filter"></div>
+    <div id="weatherEffectContainer" class="effect-container"></div>
+
+    <!-- 상단 중앙 현지 시간 -->
+    <div id="timeContainer" class="time-display">
+        <div id="localDate">--월 --일 --요일</div>
+        <div id="localTime">--:--</div>
+    </div>
+
+    <div class="main-wrapper">
+        <!-- [왼쪽] 3D 지구본 -->
+        <section class="globe-section">
+            <div id="globeViz"></div>
+        </section>
+
+        <!-- [오른쪽] 날씨 정보 -->
+        <section class="weather-section">
+            <div class="container">
+            
+                <header>
+                    <div class="header-icons left">
+                        <img src="lang-icon.png" alt="언어 변경" id="openLangBtn" class="icon-btn">
+                    </div>
+                    <div class="header-icons right">
+                         <img src="location-icon.png" alt="현위치" id="currentLocBtn" class="icon-btn" title="현위치로 가기">
+                         <img src="search-icon.png" alt="위치 검색" id="openSearchBtn" class="icon-btn" title="도시 검색">
+                    </div>
+                </header>
+
+                <main id="currentWeather">
+                    <h2 id="cityName">위치 확인 중...</h2>
+                    
+                    <div class="weather-info">
+                        <div class="temp-box">
+                            <span id="temperature">--</span>
+                            <span id="unit">°C</span>
+                        </div>
+
+                        <!-- CSS 날씨 아이콘 -->
+                        <div id="weatherIcon" class="weather-icon"></div> 
+                        
+                        <p id="description">잠시만 기다려주세요</p>
+                        
+                        <p id="feelsLikeText" class="feels-like">체감 온도: --</p>
+                        
+                        <div class="details">
+                            <p><span id="humidityLabel">습도</span>: <span id="humidity">0</span>%</p>
+                            <p><span id="windLabel">풍속</span>: <span id="wind">0</span>m/s</p>
+                            <p><span id="popLabel">강수확률</span>: <span id="pop">0</span>%</p>
+                            <p><span id="dustLabel">미세먼지</span>: <span id="dust">-</span></p>
+                        </div>
+                    </div>
+                </main>
+                
+                <div id="recentSearch" class="recent-search"></div>
+
+                <section class="bottom-section">
+                    <!-- 예보 헤더 -->
+                    <div class="forecast-header">
+                        <h3 id="forecastTitle">이번주 날씨</h3>
+                        <img src="toggle-forecast-icon.png" id="toggleForecastBtn" class="icon-btn small-btn" title="시간별/주간 예보 전환">
+                    </div>
+
+                    <div id="forecastGrid" class="forecast-grid"></div>
+                    
+                    <!-- [NEW] 천문 정보 섹션 (3D 달 + 시간 정보) -->
+                    <div class="astro-info">
+                        <h3 id="astroTitle">오늘의 천문 정보</h3>
+                        <div class="astro-content">
+                            <!-- 3D 달 모델 -->
+                            <div class="moon-viz-wrapper">
+                                <div id="moonViz"></div> 
+                                <p id="moonPhaseName">--</p>
+                            </div>
+                            
+                            <!-- 일출/일몰 등 시간 정보 -->
+                            <div class="astro-times">
+                                <div class="time-row"><span class="label-text">일출</span> <span id="sunriseTime">--:--</span></div>
+                                <div class="time-row"><span class="label-text">일몰</span> <span id="sunsetTime">--:--</span></div>
+                                <div class="time-row"><span class="label-text">월출</span> <span id="moonriseTime">--:--</span></div>
+                                <div class="time-row"><span class="label-text">월몰</span> <span id="moonsetTime">--:--</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 옷차림 추천 -->
+                    <div class="outfit-box">
+                        <h3 id="outfitTitle">오늘의 옷차림 추천</h3>
+                        <p id="outfitText">데이터 로딩 중...</p>
+                    </div>
+
+                    <!-- 운세 버튼 -->
+                    <a href="https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=%EC%98%A4%EB%8A%98%EC%9D%98+%EC%9A%B4%EC%84%B8" target="_blank" class="fortune-link">
+                        <div class="fortune-btn">
+                            <div class="clover-icon"></div>
+                            <span>오늘의 운세 보러가기</span>
+                        </div>
+                    </a>
+                </section>
+            </div>
+        </section>
+    </div>
+
+    <!-- 플로팅 버튼들 -->
+    <img src="mode-icon.png" alt="모드 전환" id="toggleModeBtn" class="floating-btn mode-btn" title="다크/야간 모드">
+    <img src="temp-icon.png" alt="단위 변환" id="toggleUnitBtn" class="floating-btn" title="섭씨/화씨 변환">
+
+    <!-- 검색 모달 -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeSearchBtn">&times;</span>
+            <h3>도시 검색</h3>
+            <div class="search-box">
+                <input type="text" id="cityInput" placeholder="예: 서울, New York" autocomplete="off">
+                <button id="searchActionBtn">Go</button>
+                <div id="suggestionBox" class="suggestion-box"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 언어 선택 모달 -->
+    <div id="langModal" class="modal">
+        <div class="modal-content small-modal">
+            <span class="close-btn" id="closeLangBtn">&times;</span>
+            <h3>언어 선택 / Language</h3>
+            <div class="lang-list">
+                <button onclick="changeLanguage('kr')">한국어 (Korean)</button>
+                <button onclick="changeLanguage('en')">English</button>
+                <button onclick="changeLanguage('ja')">日本語 (Japanese)</button>
+                <button onclick="changeLanguage('zh_cn')">中文 (Chinese)</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

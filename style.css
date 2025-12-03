@@ -1,0 +1,292 @@
+/* 기본 스타일 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; 
+    background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+    color: #002855; 
+    position: relative;
+    transition: background 0.5s ease, color 0.5s ease;
+}
+
+body.day { background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); }
+body.night { background: linear-gradient(120deg, #0f2027 0%, #203a43 50%, #2c5364 100%); }
+
+/* [다크 모드 스타일] */
+body.dark-mode:not(.night-mode-active) {
+    background: linear-gradient(120deg, #0a192f 0%, #112240 100%);
+    color: #ffffff;
+}
+body.dark-mode:not(.night-mode-active) .container {
+    background: rgba(0, 0, 0, 0.85);
+    color: #ffffff !important;
+    box-shadow: 0 15px 35px rgba(255,255,255,0.1);
+}
+body.dark-mode:not(.night-mode-active) .container h3, 
+body.dark-mode:not(.night-mode-active) .container p, 
+body.dark-mode:not(.night-mode-active) .container span, 
+body.dark-mode:not(.night-mode-active) .container div,
+body.dark-mode:not(.night-mode-active) #cityName,
+body.dark-mode:not(.night-mode-active) .feels-like,
+body.dark-mode:not(.night-mode-active) #moonPhaseName,
+body.dark-mode:not(.night-mode-active) .time-row { 
+    color: #ffffff !important; 
+}
+body.dark-mode:not(.night-mode-active) .forecast-card {
+    background: #1e1e1e;
+    color: #ffffff !important;
+    box-shadow: 0 3px 8px rgba(255,255,255,0.1);
+}
+body.dark-mode:not(.night-mode-active) .outfit-box,
+body.dark-mode:not(.night-mode-active) .astro-info {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+body.dark-mode:not(.night-mode-active) .recent-search button {
+    background: #333;
+    color: #fff;
+}
+body.dark-mode:not(.night-mode-active) .suggestion-box {
+    background-color: #1e1e1e;
+    border-color: #444;
+}
+body.dark-mode:not(.night-mode-active) .suggestion-item {
+    color: #fff;
+    border-bottom-color: #444;
+}
+body.dark-mode:not(.night-mode-active) .suggestion-item:hover {
+    background-color: #333;
+}
+
+/* [야간 모드 필터] */
+.night-filter {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 140, 0, 0.3); z-index: 9999;
+    pointer-events: none; display: none; mix-blend-mode: multiply; 
+}
+body.night-mode-active .night-filter { display: block; }
+
+/* 지구본 후광 */
+#globeViz canvas {
+    filter: drop-shadow(0 0 15px rgba(135, 206, 250, 0.6));
+    transition: filter 1s ease;
+}
+
+/* 시계 */
+.time-display {
+    position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
+    text-align: center; color: #ffffff; z-index: 20;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3); pointer-events: none;
+}
+#localTime { font-size: 3.5rem; font-weight: 900; line-height: 1; letter-spacing: 2px; }
+#localDate { font-size: 1.1rem; opacity: 0.9; margin-bottom: 5px; font-weight: 500; }
+
+@media (max-width: 900px) {
+    .time-display { top: 20px; }
+    #localTime { font-size: 2.5rem; }
+    #localDate { font-size: 0.9rem; }
+}
+
+/* 레이아웃 */
+.main-wrapper {
+    display: grid; grid-template-columns: 1fr 1fr; width: 100%; height: 100%; align-items: center;
+}
+.globe-section {
+    width: 100%; height: 100%; position: relative; overflow: hidden;
+    display: flex; justify-content: center; align-items: center;
+}
+#globeViz { width: 100%; height: 100%; cursor: url('target-cursor.png') 16 16, auto;}
+.weather-section {
+    width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
+    padding: 20px; box-sizing: border-box; z-index: 10;
+}
+.container {
+    background: rgba(255, 255, 255, 0.85); padding: 2rem; border-radius: 30px;
+    width: 100%; max-width: 450px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px); color: #002855 !important;
+    max-height: 85vh; overflow-y: auto;
+    -ms-overflow-style: none; scrollbar-width: none;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+.container::-webkit-scrollbar { display: none; }
+
+/* 날씨 아이콘 스타일 */
+.weather-icon {
+    width: 100px; height: 100px; transform: scale(1.3); 
+    margin: 20px auto 30px; position: relative;
+    display: flex; justify-content: center; align-items: center;
+}
+.weather-icon.small { transform: scale(0.35); margin: -30px auto;width: 100px;
+    height: 100px;
+    
+    /* 축소 및 정렬 기준점 설정 */
+    transform: scale(0.4); /* 0.35는 너무 작아서 0.4로 살짝 키웠습니다 */
+    transform-origin: center center;
+    
+    /* [핵심] 축소되면서 생기는 위아래 빈 공간(여백) 제거 */
+    /* 100px짜리가 40px(0.4배)이 되었으니, 위아래로 30px씩 빈 공간이 생김 -> -30px로 당김 */
+    margin: -30px 0; }
+
+/* 달 아이콘 배경 (원형 검정) */
+.weather-icon.moon {
+    background-color: #000000; border-radius: 50%; width: 90px; height: 90px; padding: 5px;
+}
+.weather-icon.moon.small { transform: scale(0.4); margin: -25px auto; display: block; }
+.weather-icon::before, .weather-icon::after { content: ''; position: absolute; }
+
+/* 애니메이션 */
+@keyframes sun-pulse { 0% { transform: scale(1); box-shadow: 0 0 20px #ffcc00; } 50% { transform: scale(1.15); box-shadow: 0 0 35px #ffcc00; } 100% { transform: scale(1); box-shadow: 0 0 20px #ffcc00; } }
+@keyframes cloud-float { 0% { transform: translateY(0); } 50% { transform: translateY(-6px); } 100% { transform: translateY(0); } }
+@keyframes rain-drop { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(20px); opacity: 0; } }
+@keyframes snow-fall { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(25px); opacity: 0; } }
+@keyframes thunder-flash { 0%, 100% { opacity: 0; } 10%, 90% { opacity: 1; } 15%, 85% { opacity: 0.3; } }
+@keyframes moon-swing { 0% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } 100% { transform: rotate(-10deg); } }
+@keyframes moon-glow { 0% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7)); } 50% { filter: drop-shadow(0 0 10px rgba(255, 255, 255, 1)); } 100% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7)); } }
+
+/* 도형 스타일 */
+.weather-icon.clouds::before, .weather-icon.rain::before, .weather-icon.snow::before, .weather-icon.thunder::before { width: 60px; height: 20px; background: #b0c4de; border-radius: 10px; top: 50px; box-shadow: 0 -25px 0 5px #b0c4de, 25px -25px 0 10px #b0c4de; z-index: 2; animation: cloud-float 3s infinite ease-in-out; }
+.weather-icon.rain::before, .weather-icon.snow::before, .weather-icon.thunder::before { background: #90a4be; box-shadow: 0 -25px 0 5px #90a4be, 25px -25px 0 10px #90a4be; }
+.weather-icon.clear::before { width: 50px; height: 50px; background: #ffcc00; border-radius: 50%; top: 25px; animation: sun-pulse 2s infinite ease-in-out; }
+.weather-icon.moon::before { width: 70px; height: 70px; border-radius: 50%; background: transparent; box-shadow: inset 20px -10px 0 0 #ffffff; top: 50%; left: 50%; margin-top: -35px; margin-left: -35px; transform-origin: center center; animation: moon-swing 3s infinite ease-in-out, moon-glow 2s infinite ease-in-out; }
+.weather-icon.rain::after { width: 4px; height: 10px; background: #4a90e2; border-radius: 2px; top: 75px; left: 35px; box-shadow: 25px 5px 0 #4a90e2, 10px 10px 0 #4a90e2; animation: rain-drop 0.8s infinite linear; }
+.weather-icon.snow::after { width: 8px; height: 8px; background: #fff; border-radius: 50%; top: 75px; left: 35px; box-shadow: 25px 5px 0 #fff, 10px 10px 0 #fff; animation: snow-fall 2s infinite linear; }
+.weather-icon.thunder::after { width: 0; height: 0; border-left: 10px solid transparent; border-right: 5px solid transparent; border-top: 25px solid #ffd700; top: 75px; left: 45px; transform: skew(-15deg); filter: drop-shadow(0 0 5px #ffd700); animation: thunder-flash 1.5s infinite; }
+
+/* UI 요소 */
+.container h3, .container p, .container span, .container div { color: #002855 !important; }
+#cityName { font-size: 3.5rem; font-weight: 800; margin: 10px 0 20px 0; color: #002855 !important; line-height: 1.2; }
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.header-icons.right { display: flex; gap: 10px; }
+.icon-btn { width: 40px; height: 40px; cursor: pointer; transition: transform 0.2s; }
+.icon-btn:hover { transform: scale(1.1); }
+.floating-btn { position: fixed; bottom: 20px; right: 20px; width: 30px; height: 30px; cursor: pointer; z-index: 1000; transition: transform 0.2s; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+.floating-btn:hover { transform: scale(1.1); }
+#toggleModeBtn { bottom: 60px; }
+#toggleUnitBtn { bottom: 20px; }
+
+#currentWeather { text-align: center; margin: 15px 0; }
+.weather-info { display: flex; flex-direction: column; align-items: center; }
+.temp-box { font-size: 4rem; font-weight: bold; margin-bottom: 10px; }
+#description { font-size: 1.2rem; font-weight: bold; margin: 10px 0 5px 0; }
+.feels-like { font-size: 0.95rem; color: #002855; opacity: 0.8; margin-bottom: 15px; }
+.details { margin-top: 5px; font-size: 1rem; line-height: 1.7; }
+
+.forecast-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.icon-btn.small-btn { width: 24px; height: 24px; cursor: pointer; transition: transform 0.2s; opacity: 0.8; }
+.icon-btn.small-btn:hover { transform: scale(1.1) rotate(15deg); opacity: 1; }
+
+.forecast-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; margin-top: 15px; scrollbar-width: auto; -ms-overflow-style: auto; }
+.forecast-grid::-webkit-scrollbar { height: 8px; display: block; }
+.forecast-grid::-webkit-scrollbar-thumb { background: rgba(0, 40, 85, 0.2); border-radius: 4px; }
+.forecast-grid::-webkit-scrollbar-track { background: transparent; }
+/* style.css */
+
+.forecast-card {
+    background: #fff;
+    padding: 10px; /* 패딩을 조금 줄여서 공간 확보 */
+    border-radius: 15px;
+    min-width: 80px; /* 최소 너비 고정 */
+    
+    /* [수정] Flexbox로 강력하게 중앙 정렬 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    gap: 5px; /* 요소 사이 간격 */
+    
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    color: #002855 !important;
+}
+.astro-info { margin-top: 20px; padding: 15px; background-color: rgba(255, 255, 255, 0.6); border-radius: 15px; text-align: center; }
+.astro-info h3 { font-size: 1.1rem; margin-bottom: 10px; color: #002855; }
+.astro-content { display: flex; justify-content: space-around; align-items: center; gap: 10px; }
+.moon-viz-wrapper { width: 100px; display: flex; flex-direction: column; align-items: center; }
+#moonViz { width: 80px; height: 80px; border-radius: 50%; background: #000; overflow: hidden; margin-bottom: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+#moonPhaseName { font-size: 0.9rem; font-weight: bold; color: #002855; }
+.astro-times { display: flex; flex-direction: column; gap: 5px; text-align: left; font-size: 0.9rem; width: 140px; }
+.time-row { display: flex; justify-content: space-between; color: #002855; }
+
+.outfit-box { margin-top: 25px; padding: 18px; background-color: rgba(255, 255, 255, 0.6); border-radius: 15px; text-align: center; font-size: 1.05rem; }
+.fortune-link { text-decoration: none; display: block; margin-top: 15px; }
+.fortune-btn { background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%); color: white; padding: 12px; border-radius: 15px; text-align: center; font-weight: bold; font-size: 1rem; box-shadow: 0 4px 10px rgba(86, 171, 47, 0.3); transition: transform 0.2s, box-shadow 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+.fortune-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(86, 171, 47, 0.4); }
+.fortune-btn:active { transform: translateY(0); }
+.clover-icon { width: 10px; height: 10px; background: white; position: relative; border-radius: 0 10px 5px 10px; transform: rotate(-45deg); box-shadow: 8px -8px 0 0 white, 8px 8px 0 0 white, 0 16px 0 0 white; margin-right: 15px; margin-bottom: 5px; }
+
+.recent-search { margin-top: 15px; text-align: center; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
+.recent-search button { border: none; padding: 8px 14px; border-radius: 18px; color: #002855; background: #eef2f5; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.2s; }
+.recent-search button:hover { background: #d0e1f9; }
+
+@media (max-width: 900px) {
+    .main-wrapper { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; overflow-y: auto; }
+    .globe-section { height: 50vh; order: 1; }
+    .weather-section { height: auto; min-height: 50vh; order: 2; padding-bottom: 50px; }
+    body { overflow: auto; height: auto; }
+}
+
+.modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+.modal-content { background-color: #fefefe; margin: 35% auto; padding: 25px; border: 1px solid #888; width: 85%; max-width: 420px; border-radius: 18px; text-align: center; position: relative; color: #002855; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+@media (min-width: 768px) { .modal-content { margin: 15% auto; } }
+.close-btn { position: absolute; right: 20px; top: 15px; font-size: 30px; font-weight: bold; cursor: pointer; color: #002855; }
+.search-box { display: flex; gap: 8px; margin-top: 20px; position: relative; }
+.search-box input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; }
+.search-box button { padding: 12px 24px; background: #a1c4fd; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: #002855; font-size: 1rem; transition: background 0.2s; }
+.search-box button:hover { background: #8ab0e9; }
+.suggestion-box { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ccc; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000; max-height: 200px; overflow-y: auto; display: none; }
+.suggestion-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; color: #333; text-align: left; }
+.suggestion-item:last-child { border-bottom: none; }
+.suggestion-item:hover { background-color: #f0f0f0; }
+.lang-list { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+.lang-list button { padding: 12px; background: #f0f4f8; border: none; border-radius: 10px; cursor: pointer; font-size: 1.05rem; color: #002855; font-weight: bold; transition: background 0.2s; }
+.lang-list button:hover { background: #d0e1f9; }
+/* style.css 맨 아래에 추가 */
+
+/* --- 날씨 배경 효과 (비, 눈, 구름) --- */
+.effect-container {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; /* 마우스 클릭이 통과되도록 설정 */
+    z-index: 1; /* 배경보다는 위에, 컨텐츠보다는 아래 */
+    overflow: hidden;
+}
+
+/* 1. 비 (Rain) */
+.rain-drop {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.6);
+    width: 2px;
+    height: 15px;
+    top: -20px;
+    animation: rainFall linear infinite;
+}
+@keyframes rainFall {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(100vh); }
+}
+
+/* 2. 눈 (Snow) */
+.snow-flake {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    top: -10px;
+    animation: snowFall linear infinite;
+}
+@keyframes snowFall {
+    0% { transform: translateY(0) translateX(0); opacity: 1; }
+    100% { transform: translateY(100vh) translateX(20px); opacity: 0.3; }
+}
+
+/* 3. 구름 (Clouds) */
+.cloud-effect {
+    position: absolute;
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+    animation: cloudDrift linear infinite;
+}
+@keyframes cloudDrift {
+    from { transform: translateX(-200px); }
+    to { transform: translateX(100vw); }
+}
