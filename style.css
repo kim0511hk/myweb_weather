@@ -290,3 +290,57 @@ header { display: flex; justify-content: space-between; align-items: center; mar
     from { transform: translateX(-200px); }
     to { transform: translateX(100vw); }
 }
+/* style.css 맨 마지막 */
+
+/* --- [모바일 전용 스타일] --- */
+@media (max-width: 900px) {
+
+    /* 1. 전체 페이지 스크롤 허용 */
+    body { 
+        overflow-y: auto !important; 
+        height: auto !important; 
+    }
+
+    /* 2. 레이아웃을 세로(컬럼) 방향으로 변경 */
+    .main-wrapper {
+        display: flex !important;
+        flex-direction: column; /* 위아래로 쌓기 */
+        height: auto !important; /* 고정 높이 해제 */
+    }
+
+    /* 3. [순서 1번] 날씨 섹션: 화면 꽉 채우기 */
+    .weather-section {
+        order: 1 !important; /* 순서를 맨 위로 강제 변경 */
+        width: 100%;
+        min-height: 100vh; /* 화면 높이의 100%를 차지하게 설정 */
+        padding: 40px 15px; /* 위아래 여백 */
+        box-sizing: border-box;
+    }
+
+    /* 날씨 카드 모바일 최적화 */
+    .container {
+        width: 100% !important;
+        max-width: none !important;
+        box-shadow: none; /* 모바일에서는 그림자 살짝 빼서 가볍게 */
+        background: rgba(255, 255, 255, 0.9); /* 가독성 위해 배경 조금 더 진하게 */
+    }
+
+    /* 4. [순서 2번] 지구본 섹션: 아래로 이동 */
+    .globe-section {
+        order: 2 !important; /* 순서를 두 번째로 */
+        width: 100%;
+        height: 80vh !important; /* 높이는 화면의 80% 정도 */
+        border-top: 1px solid rgba(255,255,255,0.2); /* 구분선 */
+    }
+
+    /* 지구본 캔버스 크기 강제 조정 */
+    #globeViz {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* (선택) 모바일에서 불필요한 요소 숨기기 */
+    .floating-btn {
+        bottom: 10px; /* 버튼 위치 조금 조정 */
+    }
+}
