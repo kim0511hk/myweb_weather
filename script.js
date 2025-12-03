@@ -223,11 +223,23 @@ function initMoon() {
         (moonContainer)
         .globeImageUrl(moonImg)
         .bumpImageUrl(bumpImg)
-        .backgroundColor('#000000') // 배경 검정
+        .backgroundColor('#000000') 
         .width(80).height(80)
-        .showAtmosphere(false); // 대기 없음
+        .showAtmosphere(false) 
+        
+        // [클릭 이벤트] 
+        // [수정] 클릭하면 회전 각도(위치) 리셋!
+        .onGlobeClick(() => {
+            // 1. 카메라를 정면(위도 0, 경도 0)으로 부드럽게 이동 (1초 동안)
+            // altitude: 2.5는 기본 줌 거리입니다.
+            moonWorld.pointOfView({ lat: 0, lng: 0, altitude: 2.5 }, 1000);
 
-    // [핵심] 조명 설정 (그림자 만들기)
+            // 2. 오늘의 달 정보로도 업데이트 (혹시 테스트하느라 바꿨을까봐)
+            if (currentLat && currentLon) {
+                updateAstroInfo(currentLat, currentLon);
+            }
+        });
+        
     const scene = moonWorld.scene();
     
     // 1. 기존 조명 제거 (기본 조명이 있으면 그림자가 안 생김)
