@@ -343,4 +343,43 @@ header { display: flex; justify-content: space-between; align-items: center; mar
     .floating-btn {
         bottom: 10px; /* 버튼 위치 조금 조정 */
     }
+}   
+/* style.css 의 맨 아래 @media (max-width: 900px) 블록 안쪽 */
+
+@media (max-width: 900px) {
+    /* ... (기존 모바일 레이아웃 코드들) ... */
+
+    /* [추가] 시계 고정 (Sticky Header) */
+    .time-display {
+        position: fixed; /* 화면에 딱 달라붙게 고정 */
+        top: 0;          /* 화면 맨 위 */
+        left: 0;
+        width: 100%;     /* 너비 꽉 채우기 */
+        padding: 15px 0 30px 0; /* 위아래 여백 (아래쪽을 넓게 줘서 그라데이션 자연스럽게) */
+        
+        /* 배경을 투명한 검정 그라데이션으로 처리해서 글자가 잘 보이게 함 */
+        background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+        
+        z-index: 1000;   /* 다른 모든 요소보다 위에 오도록 */
+        transform: none; /* 기존 중앙 정렬(translate) 해제 */
+        text-align: center;
+        pointer-events: none; /* 터치가 통과되도록 (뒤에 있는 버튼 누를 수 있게) */
+    }
+
+    /* 시계 텍스트 크기 조정 (너무 크면 방해되니까) */
+    #localTime {
+        font-size: 2.2rem; /* 조금 작게 줄임 */
+        text-shadow: 0 2px 5px rgba(0,0,0,0.5); /* 그림자 진하게 */
+    }
+    
+    #localDate {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
+    /* 시계가 가리지 않도록 본문 내용(날씨 섹션)을 살짝 아래로 내림 */
+    .weather-section {
+        padding-top: 100px !important; /* 시계 높이만큼 공간 확보 */
+    }
 }
