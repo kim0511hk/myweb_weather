@@ -151,7 +151,7 @@ body.night-mode-active .night-filter { display: block; }
 .weather-icon.clear::before { width: 50px; height: 50px; background: #ffcc00; border-radius: 50%; top: 25px; animation: sun-pulse 2s infinite ease-in-out; }
 .weather-icon.moon::before { width: 70px; height: 70px; border-radius: 50%; background: transparent; box-shadow: inset 20px -10px 0 0 #ffffff; top: 50%; left: 50%; margin-top: -35px; margin-left: -35px; transform-origin: center center; animation: moon-swing 3s infinite ease-in-out, moon-glow 2s infinite ease-in-out; }
 .weather-icon.rain::after { width: 4px; height: 10px; background: #4a90e2; border-radius: 2px; top: 75px; left: 35px; box-shadow: 25px 5px 0 #4a90e2, 10px 10px 0 #4a90e2; animation: rain-drop 0.8s infinite linear; }
-.weather-icon.snow::after { width: 8px; height: 8px; background: #fff; border-radius: 50%; top: 75px; left: 35px; box-shadow: 25px 5px 0 #fff, 10px 10px 0 #fff; animation: snow-fall 2s infinite linear; }
+.weather-icon.snow::after { width: 8px; height: 8px; background: #bfe9ff; border-radius: 50%; top: 75px; left: 35px; box-shadow: 25px 5px 0 #bfe9ff, 10px 10px 0 #bfe9ff; animation: snow-fall 2s infinite linear; }
 .weather-icon.thunder::after { width: 0; height: 0; border-left: 10px solid transparent; border-right: 5px solid transparent; border-top: 25px solid #ffd700; top: 75px; left: 45px; transform: skew(-15deg); filter: drop-shadow(0 0 5px #ffd700); animation: thunder-flash 1.5s infinite; }
 
 /* UI 요소 */
@@ -269,7 +269,7 @@ header { display: flex; justify-content: space-between; align-items: center; mar
 /* 2. 눈 (Snow) */
 .snow-flake {
     position: absolute;
-    background: white;
+    background: rgba(191, 233, 255, 0.95); /* 연한 하늘색 */
     border-radius: 50%;
     top: -10px;
     animation: snowFall linear infinite;
@@ -382,4 +382,4 @@ header { display: flex; justify-content: space-between; align-items: center; mar
     .weather-section {
         padding-top: 100px !important; /* 시계 높이만큼 공간 확보 */
     }
-}
+}   
